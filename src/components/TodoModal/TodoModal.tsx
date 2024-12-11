@@ -1,12 +1,22 @@
+//TODOS ADD useEffect import, add props in args.
+
 import React from 'react';
 import { Loader } from '../Loader';
+import { User } from '../../types/User';
 
-export const TodoModal: React.FC = () => {
+interface Props {
+  currentUser: User;
+  setUser: (userId: User | null) => void;
+  setSelectedTodoId: (todo: number) => void;
+  isLoading: boolean;
+}
+export const TodoModal: React.FC<Props> = () => {
+  //const { currentUser, setUser, setSelectedTodoId, isLoading } = props;
+
   return (
     <div className="modal is-active" data-cy="modal">
       <div className="modal-background" />
-
-      {true ? (
+      {false ? (
         <Loader />
       ) : (
         <div className="modal-card">
