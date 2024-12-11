@@ -59,7 +59,7 @@ export const App: React.FC = () => {
     }
 
     getTodoList();
-  }, [selectedTodoId]);
+  }, [selectedTodoId, todos]);
 
   return (
     <>
