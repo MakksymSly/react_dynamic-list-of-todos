@@ -1,4 +1,3 @@
-//CHECK COMMENTS BEFORE START
 /* eslint-disable max-len */
 import React, { useEffect, useState } from 'react';
 import 'bulma/css/bulma.css';
@@ -6,22 +5,20 @@ import '@fortawesome/fontawesome-free/css/all.css';
 
 import { TodoList } from './components/TodoList';
 import { TodoFilter } from './components/TodoFilter';
-//Delete comment below
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { TodoModal } from './components/TodoModal';
 import { Loader } from './components/Loader';
 
-import { getTodos, getUser } from './api';
+import { getTodos } from './api';
 import { Todo } from './types/Todo';
-import { User } from './types/User';
+import { Category } from './types/enums/Category';
 
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  //Delete comment below.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [user, setUser] = useState<User | null>();
+  const [query, setQuery] = useState<string>('');
+  const [category, setCategory] = useState<string>(Category.All);
+
   // eslint-disable-next-line prettier/prettier
   const [selectedTodoId, setSelectedTodoId] = useState<number | null>(null);
 
@@ -40,26 +37,24 @@ export const App: React.FC = () => {
       }
     };
 
-    if (selectedTodoId) {
-      const getCurrentUser = async () => {
-        try {
-          const userId = todos.find(todo => todo.id === selectedTodoId)?.userId;
-
-          if (userId) {
-            const currentUser = await getUser(userId);
-
-            setUser(currentUser);
-          }
-        } catch (err) {
-          setError('getUser() ERROR');
-        }
-      };
-
-      getCurrentUser();
-    }
-
     getTodoList();
-  }, [selectedTodoId, todos]);
+  }, []);
+
+  const selectedTodo = todos.find(todo => todo.id === selectedTodoId);
+
+  const filteredTodos = todos
+    .filter(todo => {
+      if (category === Category.Completed) {
+        return todo.completed;
+      }
+
+      if (category === Category.Active) {
+        return !todo.completed;
+      }
+
+      return true;
+    })
+    .filter(todo => todo.title.toLowerCase().includes(query.toLowerCase()));
 
   return (
     <>
@@ -69,7 +64,12 @@ export const App: React.FC = () => {
             <h1 className="title">Todos:</h1>
 
             <div className="block">
-              <TodoFilter />
+              <TodoFilter
+                query={query}
+                setQuery={setQuery}
+                category={category}
+                setCategory={setCategory}
+              />
             </div>
             {error && (
               <div className="message is-danger is-flex is-justify-content-center">
@@ -81,7 +81,7 @@ export const App: React.FC = () => {
                 <Loader />
               ) : (
                 <TodoList
-                  todos={todos}
+                  todos={filteredTodos}
                   selectedTodoId={selectedTodoId}
                   setSelectedTodoId={setSelectedTodoId}
                 />
@@ -91,14 +91,12 @@ export const App: React.FC = () => {
         </div>
       </div>
 
-      {/* {selectedTodoId && (
+      {selectedTodoId && (
         <TodoModal
-          currentUser={user}
-          setUser={setUser}
+          selectedTodo={selectedTodo}
           setSelectedTodoId={setSelectedTodoId}
-          isLoading={isLoading}
         />
-      )} */}
+      )}
     </>
   );
 };

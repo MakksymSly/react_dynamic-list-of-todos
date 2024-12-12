@@ -27,7 +27,7 @@ export const TodoList: React.FC<Props> = props => {
       </thead>
 
       <tbody>
-        {todos.map((todo, index) => {
+        {todos.map(todo => {
           return (
             <tr
               data-cy="todo"
@@ -37,7 +37,7 @@ export const TodoList: React.FC<Props> = props => {
               })}
               key={todo.id}
             >
-              <td className="is-vcentered">{index + 1}</td>
+              <td className="is-vcentered">{todo.id}</td>
               <td className="is-vcentered">
                 {todo.completed && (
                   <span className="icon" data-cy="iconCompleted">
@@ -65,7 +65,13 @@ export const TodoList: React.FC<Props> = props => {
                   }}
                 >
                   <span className="icon">
-                    <i className="far fa-eye" />
+                    <i
+                      className={cn('far', {
+                        'fa-eye-slash':
+                          selectedTodoId && todo.id === selectedTodoId,
+                        'fa-eye': !selectedTodoId || todo.id !== selectedTodoId,
+                      })}
+                    />
                   </span>
                 </button>
               </td>
