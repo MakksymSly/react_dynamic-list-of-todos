@@ -18,7 +18,6 @@ export const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState<string>('');
   const [category, setCategory] = useState<string>(Category.All);
-
   // eslint-disable-next-line prettier/prettier
   const [selectedTodoId, setSelectedTodoId] = useState<number | null>(null);
 

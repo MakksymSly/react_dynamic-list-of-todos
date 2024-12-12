@@ -32,7 +32,7 @@ export const TodoModal: React.FC<Props> = props => {
     };
 
     getUserFromApi();
-  });
+  }, []);
 
   return (
     <div className="modal is-active" data-cy="modal">
